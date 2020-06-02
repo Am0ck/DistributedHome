@@ -10,6 +10,8 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using DistributedHome.Providers;
 using DistributedHome.Models;
+using Microsoft.Owin.Security.Facebook;
+using DistributedHome.Facebook;
 
 namespace DistributedHome
 {
@@ -58,7 +60,15 @@ namespace DistributedHome
             //app.UseFacebookAuthentication(
             //    appId: "",
             //    appSecret: "");
-
+            var facebookOptions = new FacebookAuthenticationOptions()
+            {
+                AppId = "640502623345125",
+                AppSecret = "e75a0ec04a1ce44596daa2aa5388fc39",
+                BackchannelHttpHandler = new FacebookHandler(),
+                UserInformationEndpoint = "https://graph.facebook.com/me?fields=id,email"
+            };
+            facebookOptions.Scope.Add("email");
+            app.UseFacebookAuthentication(facebookOptions);
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
             //    ClientId = "",
