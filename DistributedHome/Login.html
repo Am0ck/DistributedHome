@@ -8,24 +8,24 @@
 <body style="padding-top:20px">
     <div class="col-md-10 col-md-offset-1">
         <div class="well">
-            <!--This table contains the fields that we want to capture to register new user-->
+            <!--Table to capture username and password-->
             <table class="table table-bordered">
                 <thead>
                     <tr class="success">
                         <th colspan="2">
-                           Logins
+                            Existing User Login
+                            <a href="Register.html" class="btn btn-success pull-right">
+                                Register
+                            </a>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <td>Usename</td>
                         <td>
-                            <input type="button" id="btnFacebookLogin" value="Login with Facebook" class="btn btn-success" />
+                            <input type="text" id="txtUsername" placeholder="Username" />
                         </td>
-                    </tr>
-                    <tr>
-                        <td>Email</td>
-                        <td><input type="text" id="txtEmail" placeholder="Ehail" /> </td>
                     </tr>
                     <tr>
                         <td>Password</td>
@@ -36,68 +36,158 @@
                     </tr>
                     <tr class="success">
                         <td colspan="2">
-                            <input id="btnLogin" class="btn btn-success"
-                                   type="button" value="Login" />
+                            <input id="btnLogin" class="btn btn-success" type="button"
+                                   value="Login" />
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <!--Bootstrap modal dialog that shows up when regsitration is successful-->
-            <div class="modal fade" tabindex="-1" id="successModal"
-                 data-keyboard="false" data-backdrop="static">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">
-                                &times;
-                            </button>
-                            <h4 class="modal-title">Success</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <h2 class="modal-title">Login Successful!</h2>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success"
-                                    data-dismiss="modal">
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--Bootstrap alert to display any validation errors-->
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="success">
+                        <th>
+                            Social Logins
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="button" id="btnFacebookLogin"
+                                   value="Login with Facebook" class="btn btn-success" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--Bootstrap alert to display error message if the login fails-->
             <div id="divError" class="alert alert-danger collapse">
                 <a id="linkClose" href="#" class="close">&times;</a>
                 <div id="divErrorText"></div>
             </div>
         </div>
     </div>
-
+    <input id="get" class="btn btn-success" type="button"
+           value="Get" />
+    <input id="getPhotos" class="btn btn-success" type="button"
+           value="Get Photos" />
     <script src="Scripts/jquery-3.5.1.min.js"></script>
-    <script src="Scripts/bootstrap.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            getAccessToken();
-            //Close the bootstrap alert
+            $('#get').click(function () {
+                $.ajax({
+                    // Post username, password & the grant type to /token
+                    url: '/api/Facebook',
+                    method: 'GET',
+                    contentType: 'application/json',
+                    data: {
+                        id: 'EAAJGiKNXmeUBAPb7Ek09jMZA7b0WlOIQnjIksYLi1qZABbJvuyYFd89UfQPWZCTSl8nrBI3YJ4lIkfGFRLUX898cRqppzEpOoMCA78BS9yvjXLbJ8xGXOYhK6uufFqKhdr8Vc3PafHIJCYYUq4rQZAMtZCd3hSPvIPZC0wMRejHrYlKUZC6kHhQexfchpWZA2g2HwcLTKIK0owdu1BginBydT3tjKe6ScwOAI9MKiU0IxcZA1pruXJgag'
+                    },
+                    // When the request completes successfully, save the
+                    // access token in the browser session storage and
+                    // redirect the user to Data.html page. We do not have
+                    // this page yet. So please add it to the
+                    // EmployeeService project before running it
+                    success: function (response) {
+                        //alert("sdfg")
+                        //console.log(response)
+                        var obj = JSON.parse(response);
+                        console.log(obj)
+                        console.log(obj.data)
+                        var l = obj.data.length
+                        for (i = 0; i < l - 1; i++) {
+                            console.log(obj.data[i].message)
+                            //if (obj.posts.data[i].attachments.data[0] != null) {
+                            //    console.log(obj.posts.data[i].attachments.data[0])
+                            //}
+
+                        }
+                        //for (p in obj.posts.data) {
+                        //    console.log(p.id)
+                        //}
+                        //console.log(obj.posts.data[0].id)
+
+                        //sessionStorage.setItem("accessToken", response.access_token);
+                        //window.location.href = "Data.html";
+                    },
+                    // Display errors if any in the Bootstrap alert <div>
+                    error: function (jqXHR) {
+                        alert("error")
+                    }
+                });
+            });
+            $('#getPhotos').click(function () {
+                $.ajax({
+                    // Post username, password & the grant type to /token
+                    url: '/api/Photos',
+                    method: 'GET',
+                    contentType: 'application/json',
+                    data: {
+                        id: 'EAAJGiKNXmeUBAEwQUbBAcLudDkrLZAI7PapQ9D7v6DWrfMQDzoo9jWZARPLrZCQkXoeeGKh72JDSskuTEQ09ZBLFCpOs5MZCM2Q1S60Q9BY0NBHa0tvbbH9SwEZC1DzW01t578St4rUM6eccNZBJm85Bo8gRZC1oiQnhsZAwNvDJnJFqIcBUeBJUCfSbci67zOzNekeAuN7qel3NF78M5JZBCS2HwBjs9vjyhNtf5sMnJTzA5JRr2jUO7m'
+                    },
+                    // When the request completes successfully, save the
+                    // access token in the browser session storage and
+                    // redirect the user to Data.html page. We do not have
+                    // this page yet. So please add it to the
+                    // EmployeeService project before running it
+                    success: function (response) {
+                        //alert("sdfg")
+                        //console.log(response)
+                        var obj = JSON.parse(response);
+                        console.log(obj)
+                        console.log(obj.data)
+                        var l = obj.data.length
+                        for (i = 0; i < l - 1; i++) {
+                            console.log(obj.data[i].picture)
+                            //if (obj.posts.data[i].attachments.data[0] != null) {
+                            //    console.log(obj.posts.data[i].attachments.data[0])
+                            //}
+
+                        }
+                        //for (p in obj.posts.data) {
+                        //    console.log(p.id)
+                        //}
+                        //console.log(obj.posts.data[0].id)
+
+                        //sessionStorage.setItem("accessToken", response.access_token);
+                        //window.location.href = "Data.html";
+                    },
+                    // Display errors if any in the Bootstrap alert <div>
+                    error: function (jqXHR) {
+                        alert("error")
+                    }
+                });
+            });
+
             $('#linkClose').click(function () {
                 $('#divError').hide('fade');
             });
 
-            // Save the new user details
+            $('#btnFacebookLogin').click(function () {
+                window.location.href = "/api/Account/ExternalLogin?provider=Facebook&response_type=token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A60629%2FLogin.html&state=NaPt-0OOxevMrUuhFH7YsVDwlX4zUZDDsh8ONo4nndk1";
+            });
+
             $('#btnLogin').click(function () {
                 $.ajax({
-                    url: '/api/account/register',
+                    // Post username, password & the grant type to /token
+                    url: '/token',
                     method: 'POST',
+                    contentType: 'application/json',
                     data: {
-                        email: $('#txtEmail').val(),
-                        password: $('#txtPassword').val(),         
+                        username: $('#txtUsername').val(),
+                        password: $('#txtPassword').val(),
+                        grant_type: 'password'
                     },
-                    success: function () {
-                        $('#successModal').modal('show');
+                    // When the request completes successfully, save the
+                    // access token in the browser session storage and
+                    // redirect the user to Data.html page. We do not have
+                    // this page yet. So please add it to the
+                    // EmployeeService project before running it
+                    success: function (response) {
+                        sessionStorage.setItem("accessToken", response.access_token);
+                        window.location.href = "Data.html";
                     },
+                    // Display errors if any in the Bootstrap alert <div>
                     error: function (jqXHR) {
                         $('#divErrorText').text(jqXHR.responseText);
                         $('#divError').show('fade');
