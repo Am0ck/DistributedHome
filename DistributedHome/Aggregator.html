@@ -69,6 +69,39 @@
 
             </div>
         </div>
+        <div id="ProfileContent" class="container jumbotron">
+
+            <div id="prefs" class="row">
+                <div id="fbP" class="col-lg-4">
+                    <h2 class="display-4">Get FB Profile Details</h2>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" id="fb_name_pref" value="option1">
+                        <label class="form-check-label" for="fb_name_pref">Name</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="fb_surname_pref" value="option2">
+                        <label class="form-check-label" for="fb_surname_pref">Surname</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="fb_dob_pref" value="option2">
+                        <label class="form-check-label" for="fb_dob_pref">D.O.B</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input id="fbSave" class="btn btn-primary" type="button" value="Save Preferenes"/>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                </div>
+                <div id="twP" class="col-lg-4">
+                    <h2 class="display-4">Get Twitter Profile Details</h2>
+              
+                </div>
+
+            </div>
+        </div>
+
+        
         <!-- Grid row -->
 
         <script src="Scripts/jquery-3.5.1.min.js"></script>
@@ -77,15 +110,19 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>-->
         <script type="text/javascript">
             $(document).ready(function () {
-                var token = 'EAAJGiKNXmeUBALQezjSHiUlvPyBZCmTOYC2wDRsRa09cYZAxetPN0aacokeGNBjOEPkXmv8bNiE2viVvKNX8G41gP0lUZAXmQ8peRcI4zDhALeOw5ybU3ZACrZClZCg1ZAl0akXXTJZAHZCeb1DGZANtyhEse38xZAZAkzPqzvvanw9iUsP8DzR2SG2kXyq5lyxZA6Q70FgRB1nF5vxh1YgmSpdjEFYcyqB6tDgoGlPtqhhnUCvJbOA0CsxrW'
+                var token = 'EAAJGiKNXmeUBAGWechGKJhYZBRsyh44K5q3lxBCuXCfH9tXZBvXEXaYmV5kEnLgNbj0BcM4BWMKg5lrHoZBqhl24JqKd5zmgA0PvaIwUHAzYssmF0Gpu8tBAI5HY8bXybL0aF5cyzMTPiIcbvzW9LkTNAEbNOIMRHqvSt9nQV0ED41RDwfLnnzOg7V2aMNjvyd9gGy9soNXPx8p0etkoLwxY5ahmB041LKPR2KHZAAo2Vnm2Ls50'
                 $('#get').click(function () {
                     //alert("sad")
+                    alert("lat is: " + localStorage.getItem('accessToken'))
                     $("#content").hide;
                     $.ajax({
                         // Post username, password & the grant type to /token
                         url: '/api/Facebook',
                         method: 'GET',
                         contentType: 'application/json',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                        },
                         data: {
                             id: token
                         },
@@ -107,7 +144,7 @@
                         },
                         // Display errors if any in the Bootstrap alert <div>
                         error: function (jqXHR) {
-                            alert("error")
+                            alert("111error")
                         }
                     });
                     $.ajax({
@@ -115,6 +152,9 @@
                         url: '/api/Likes',
                         method: 'GET',
                         contentType: 'application/json',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                        },
                         data: {
                             id: token
                         },
@@ -145,6 +185,54 @@
                         contentType: 'application/json',
                         data: {
                             id: token
+                        },
+                        success: function (response) {
+                            var obj = JSON.parse(response);
+                            console.log(obj)
+                            console.log(obj.data)
+                            var l = obj.data.length
+                            for (i = 0; i < l; i++) {
+                                var pic = "<div class='mb-3 pics animation all 2'>"
+                                pic += "<img class='img-fluid' src='" + obj.data[i].picture + "' alt='Card image cap'>"
+                                pic += "</div>"
+
+                                document.getElementById("fbgallery").innerHTML += '<img class="col-md-3" src="' + obj.data[i].picture + '">';
+                                console.log(obj.data[i].picture)
+
+                            }
+                            //document.getElementById("gallery").innerHTML += pic;
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("error")
+                        }
+                    });
+                });
+                $('#fbSave').click(function () {
+                    var pref = ""
+                    var name = document.getElementById('fb_name_pref')
+                    var surname = document.getElementById('fb_surname_pref')
+                    var dob = document.getElementById('fb_dob_pref')
+                    if (name.checked) {
+                        pref += "first_name"
+                    }
+                    if (surname.checked) {
+                        pref += "last_name"
+                    } if (dob.checked) {
+                        pref += "birthday"
+                    }
+                    pref += "at=" + token
+                    alert(pref)
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: '/api/Preferences',
+                        method: 'GET',
+                        contentType: 'application/json',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                        },
+                        data: {
+                            id: pref
                         },
                         success: function (response) {
                             var obj = JSON.parse(response);

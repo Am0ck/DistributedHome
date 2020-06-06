@@ -48,5 +48,30 @@ namespace DistributedHome.Endpoints
             stringBuilder.Append(at);
             return stringBuilder.ToString();
         }
+        public string getProfileEndpoint(string at)
+        {
+            string tok = at.Substring(at.IndexOf("at=") + 3);
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append("?");
+            stringBuilder.Append("fields=");
+            if (at.Contains("first_name")) {
+                stringBuilder.Append("first_name,");
+            }
+            if (at.Contains("last_name"))
+            {
+                stringBuilder.Append("last_name,");
+            }
+            if (at.Contains("birthday"))
+            {
+                stringBuilder.Append("birthday");
+            }
+            if (stringBuilder.ToString().EndsWith(","))
+            {
+                stringBuilder.Remove(stringBuilder.Length -1, 1);
+            }
+            stringBuilder.Append("&access_token=");
+            stringBuilder.Append(tok);
+            return stringBuilder.ToString();
+        }
     }
 }

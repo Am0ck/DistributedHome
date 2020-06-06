@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using DistributedHome.Endpoints;
-using System.Web.Mvc;
 using DistributedHome.WebClient;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 //using DistributedHome.WebClient;
 
 namespace DistributedHome.Controllers
 {
+    [Authorize]
     public class FacebookController : ApiController
     {
         private FacebookGraphEndpoint fbEndpoint;
@@ -22,6 +23,8 @@ namespace DistributedHome.Controllers
         public string Get(string id)
         {
             Console.WriteLine(id);
+            string uid = User.Identity.GetUserId();
+            Console.WriteLine(uid);
             RestClient restClient = new RestClient();
             restClient.endpoint = fbEndpoint.getpostsEndpoint(id);
             string response = restClient.makeRequest();

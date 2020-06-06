@@ -184,8 +184,9 @@
                     // this page yet. So please add it to the
                     // EmployeeService project before running it
                     success: function (response) {
-                        sessionStorage.setItem("accessToken", response.access_token);
-                        window.location.href = "Data.html";
+                        localStorage.setItem("accessToken", response.access_token);
+                        alert("token is:" + response.access_token)
+                        window.location.href = "Aggregator.html";
                     },
                     // Display errors if any in the Bootstrap alert <div>
                     error: function (jqXHR) {
