@@ -10,10 +10,12 @@ namespace DistributedHome.Endpoints
     {
         public FacebookGraphEndpoint() : base(
             "",
-            "https://graph.facebook.com/me/", new Dictionary<EndpointType, string>{
-                 {EndpointType.LIKES, "likes"},
-                {EndpointType.POSTS,"posts" },
-                {EndpointType.PHOTOS,"photos"}})
+            "https://graph.facebook.com/", new Dictionary<EndpointType, string>{
+                 {EndpointType.LIKES, "me/likes"},
+                 {EndpointType.PAGE, "me/accounts"},
+                {EndpointType.POSTS,"me/posts" },
+                {EndpointType.FEED,"/feed" },
+                {EndpointType.PHOTOS,"me/photos"}})
         { }
 
         public string getpostsEndpoint(string at)
@@ -28,7 +30,7 @@ namespace DistributedHome.Endpoints
         public string getLikesEndpoint(string at)
         {
             StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
-            stringBuilder.Append("likes");
+            stringBuilder.Append(endpointTypeDictionary[EndpointType.LIKES]);
             stringBuilder.Append("?access_token=" + at);
             return stringBuilder.ToString();
         }
@@ -71,6 +73,23 @@ namespace DistributedHome.Endpoints
             }
             stringBuilder.Append("&access_token=");
             stringBuilder.Append(tok);
+            return stringBuilder.ToString();
+        }
+        public string getPageIdEndpoint(string at)
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append(endpointTypeDictionary[EndpointType.PAGE]);
+            stringBuilder.Append("?access_token=");
+            stringBuilder.Append(at);
+            return stringBuilder.ToString();
+        }
+        public string postFeedEndpoint(string pageId, string message, string pageToken)
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append(pageId);
+            stringBuilder.Append(endpointTypeDictionary[EndpointType.FEED]);
+            stringBuilder.Append("?message="+message);
+            stringBuilder.Append("&access_token="+pageToken);
             return stringBuilder.ToString();
         }
     }

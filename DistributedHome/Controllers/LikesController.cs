@@ -25,7 +25,7 @@ namespace DistributedHome.Controllers
         public string Get(string id)
         {
             
-            RestClient restClient = new RestClient();
+            RestClient restClient = new RestClient(httpVerb.GET);
             restClient.endpoint = fbEndpoint.getLikesEndpoint(id);
             string response = restClient.makeRequest();
 

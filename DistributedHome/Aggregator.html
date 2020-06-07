@@ -87,7 +87,7 @@
                         <label class="form-check-label" for="fb_dob_pref">D.O.B</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input id="fbSave" class="btn btn-primary" type="button" value="Save Preferenes"/>
+                        <input id="fbSave" class="btn btn-primary" type="button" value="Save Preferenes" />
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -95,13 +95,33 @@
                 </div>
                 <div id="twP" class="col-lg-4">
                     <h2 class="display-4">Get Twitter Profile Details</h2>
-              
+                </div>
+
+            </div>
+        </div>
+        <div id="PostContent" class="container jumbotron">
+
+            <div id="FBWritePost" class="row">
+                <div id="fbWrite" class="col-lg-4">
+                    <h2 class="display-4">Post FB</h2>
+                    <br />
+                    <label for="msg">Enter post message</label>
+                    <input type="text" class="form-control" id="msg" placeholder="Enter Message">
+                    <br />
+                    <input id="writePost" class="btn btn-primary btn-block" type="button"
+                           value="Post" />
+                </div>
+                <div class="col-lg-4">
+
+                </div>
+                <div id="twP" class="col-lg-4">
+                    <h2 class="display-4">Get Twitter Profile Details</h2>
                 </div>
 
             </div>
         </div>
 
-        
+
         <!-- Grid row -->
 
         <script src="Scripts/jquery-3.5.1.min.js"></script>
@@ -110,7 +130,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>-->
         <script type="text/javascript">
             $(document).ready(function () {
-                var token = 'EAAJGiKNXmeUBAGWechGKJhYZBRsyh44K5q3lxBCuXCfH9tXZBvXEXaYmV5kEnLgNbj0BcM4BWMKg5lrHoZBqhl24JqKd5zmgA0PvaIwUHAzYssmF0Gpu8tBAI5HY8bXybL0aF5cyzMTPiIcbvzW9LkTNAEbNOIMRHqvSt9nQV0ED41RDwfLnnzOg7V2aMNjvyd9gGy9soNXPx8p0etkoLwxY5ahmB041LKPR2KHZAAo2Vnm2Ls50'
+                console.log(localStorage.getItem('accessToken'))
+                var token = 'EAAJGiKNXmeUBABJm1V3fr7Utp31WZA0fuIbiFO3cZA8EnQXODHYojAjc9vrQZCLE8b2H2XDLtEL0mRrJkFiqNmdlta0GqdLhYTiQira5CYFjlCaE5RGtGyC34JquPEn1T8e3JdEsiEqwxCmZCoJdXk77ZCHQYGi18OQiX1NxiyUikl6nxdyE6z6O7gam1SKIfo799aGS0W3xPpnnScZAZAV'
                 $('#get').click(function () {
                     //alert("sad")
                     alert("lat is: " + localStorage.getItem('accessToken'))
@@ -256,6 +277,54 @@
                         }
                     });
                 });
+                $('#writePost').click(function () {
+                    var msg = document.getElementById('msg').value
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: '/api/Page',
+                        method: 'GET',
+                        contentType: 'application/json',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                        },
+                        data: {
+                            id: token
+                        },
+                        success: function (response) {
+                            var obj = JSON.parse(response);
+                            console.log(obj)
+                            var pageToken = obj.data[0].access_token
+                            var pageId = obj.data[0].id
+                            localStorage.setItem("pageToken", pageToken);
+                            localStorage.setItem("pageId", pageId);
+                            console.log('{"pageId": "' + pageId + '", "message": "' + msg + '", "token": "' + pageToken + '" }')
+                            $.ajax({
+                                // Post username, password & the grant type to /token
+                                url: '/api/Page',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                                },
+                                data: '{"pageId": "' + pageId + '", "message": "' + msg + '", "token": "' + pageToken + '" }',
+                                success: function () {
+                                    alert("success")
+                                },
+                                // Display errors if any in the Bootstrap alert <div>
+                                error: function (jqXHR) {
+                                    alert("errorsgdsfdg")
+                                }
+                            });
+
+
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("There are no pages found in your account to post to")
+                        }
+                    });
+                });
+                
             });
             $(function () {
                 var selectedClass = "";

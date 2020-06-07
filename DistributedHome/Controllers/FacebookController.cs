@@ -25,7 +25,7 @@ namespace DistributedHome.Controllers
             Console.WriteLine(id);
             string uid = User.Identity.GetUserId();
             Console.WriteLine(uid);
-            RestClient restClient = new RestClient();
+            RestClient restClient = new RestClient(httpVerb.GET);
             restClient.endpoint = fbEndpoint.getpostsEndpoint(id);
             string response = restClient.makeRequest();
 

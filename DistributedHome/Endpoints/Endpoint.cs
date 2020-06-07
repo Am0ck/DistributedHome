@@ -8,7 +8,9 @@ namespace DistributedHome.Endpoints
     public enum EndpointType
     {
         POSTS,
+        PAGE,
         LIKES,
+        FEED,
         PHOTOS
     }
     abstract class Endpoint

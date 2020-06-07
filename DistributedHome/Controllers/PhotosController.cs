@@ -21,7 +21,7 @@ namespace DistributedHome.Controllers
         public string Get(string id)
         {
             Console.WriteLine(id);
-            RestClient restClient = new RestClient();
+            RestClient restClient = new RestClient(httpVerb.GET);
             restClient.endpoint = fbEndpoint.getPhotosEndpoint(id);
             string response = restClient.makeRequest();
 

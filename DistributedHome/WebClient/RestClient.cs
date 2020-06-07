@@ -9,7 +9,8 @@ namespace DistributedHome.WebClient
 {
     enum httpVerb
     {
-        GET
+        GET,
+        POST
     }
     class RestClient
     {
@@ -17,10 +18,10 @@ namespace DistributedHome.WebClient
 
         public httpVerb httpMethod { get; set; }
 
-        public RestClient()
+        public RestClient(httpVerb hv)
         {
             endpoint = string.Empty;
-            httpMethod = httpVerb.GET;
+            httpMethod = hv;
         }
 
         public string makeRequest()

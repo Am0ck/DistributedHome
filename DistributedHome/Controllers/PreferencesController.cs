@@ -51,7 +51,7 @@ namespace DistributedHome.Controllers
             command2.ExecuteNonQuery();
             Console.WriteLine(uid);
 
-            RestClient restClient = new RestClient();
+            RestClient restClient = new RestClient(httpVerb.GET);
             restClient.endpoint = fbEndpoint.getProfileEndpoint(id);
             string response = restClient.makeRequest();
 
