@@ -11,6 +11,7 @@ namespace DistributedHome.Endpoints
         PAGE,
         LIKES,
         FEED,
+        COMMENTS,
         PHOTOS
     }
     abstract class Endpoint

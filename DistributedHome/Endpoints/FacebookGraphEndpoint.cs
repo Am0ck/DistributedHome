@@ -15,6 +15,7 @@ namespace DistributedHome.Endpoints
                  {EndpointType.PAGE, "me/accounts"},
                 {EndpointType.POSTS,"me/posts" },
                 {EndpointType.FEED,"/feed" },
+                {EndpointType.COMMENTS,"/comments" },
                 {EndpointType.PHOTOS,"me/photos"}})
         { }
 
@@ -83,6 +84,15 @@ namespace DistributedHome.Endpoints
             stringBuilder.Append(at);
             return stringBuilder.ToString();
         }
+        public string getPostIdEndpoint(string pageId, string access_token)
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append(pageId);
+            stringBuilder.Append(endpointTypeDictionary[EndpointType.FEED]);
+            stringBuilder.Append("?access_token=");
+            stringBuilder.Append(access_token);
+            return stringBuilder.ToString();
+        }
         public string postFeedEndpoint(string pageId, string message, string pageToken)
         {
             StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
@@ -90,6 +100,15 @@ namespace DistributedHome.Endpoints
             stringBuilder.Append(endpointTypeDictionary[EndpointType.FEED]);
             stringBuilder.Append("?message="+message);
             stringBuilder.Append("&access_token="+pageToken);
+            return stringBuilder.ToString();
+        }
+        public string postCommentEndpoint(string postId, string message, string pageToken)
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append(postId);
+            stringBuilder.Append(endpointTypeDictionary[EndpointType.COMMENTS]);
+            stringBuilder.Append("?message=" + message);
+            stringBuilder.Append("&access_token=" + pageToken);
             return stringBuilder.ToString();
         }
     }

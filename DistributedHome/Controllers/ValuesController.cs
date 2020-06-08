@@ -16,9 +16,9 @@ namespace DistributedHome.Controllers
         }
 
         // GET api/values/5
-        public string Get(int id)
+        public string Get(string id, string name)
         {
-            return "value";
+            return ""+id+" "+name;
         }
 
         // POST api/values

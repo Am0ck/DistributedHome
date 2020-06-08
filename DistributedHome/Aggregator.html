@@ -110,6 +110,11 @@
                     <br />
                     <input id="writePost" class="btn btn-primary btn-block" type="button"
                            value="Post" />
+                    <label for="comment">Enter comment message</label>
+                    <input type="text" class="form-control" id="comment" placeholder="Enter comment">
+                    <br />
+                    <input id="writeComment" class="btn btn-primary btn-block" type="button"
+                           value="Post Comment" />
                 </div>
                 <div class="col-lg-4">
 
@@ -131,7 +136,7 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 console.log(localStorage.getItem('accessToken'))
-                var token = 'EAAJGiKNXmeUBABJm1V3fr7Utp31WZA0fuIbiFO3cZA8EnQXODHYojAjc9vrQZCLE8b2H2XDLtEL0mRrJkFiqNmdlta0GqdLhYTiQira5CYFjlCaE5RGtGyC34JquPEn1T8e3JdEsiEqwxCmZCoJdXk77ZCHQYGi18OQiX1NxiyUikl6nxdyE6z6O7gam1SKIfo799aGS0W3xPpnnScZAZAV'
+                var token = 'EAAJGiKNXmeUBAEx2HNgK6jgpB3gTxpY875VpmjRy1FCZBhzzwN5ZAcDHiPAeE9opvc2UgdZCPCA52H5MkoRCkK6C3AXF1ZAvgWtH71aAF532I2hkVwJbXVmENbrd2TdZCppSfoGzwG0W2E4Ind2dvcmAyDArLp7n1lZAZCG5XaZAsPZCxwM93DGVZCLbM1CgcI6PJ8lUxmZAQooLmhuApfUxhV4'
                 $('#get').click(function () {
                     //alert("sad")
                     alert("lat is: " + localStorage.getItem('accessToken'))
@@ -324,7 +329,77 @@
                         }
                     });
                 });
-                
+                $('#writeComment').click(function () {
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: '/api/Page',
+                        method: 'GET',
+                        contentType: 'application/json',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                        },
+                        data: {
+                            id: token
+                        },
+                        success: function (response) {
+                            var obj = JSON.parse(response);
+                            console.log(obj)
+                            var pageToken = obj.data[0].access_token
+                            var pageId = obj.data[0].id
+                            localStorage.setItem("pageToken", pageToken);
+                            localStorage.setItem("pageId", pageId);
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("There are no pages found in your account to post to")
+                        }
+                    });
+                    var cmm = document.getElementById('comment').value
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: '/api/Comments',
+                        method: 'GET',
+                        contentType: 'application/json',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                        },
+                        data: {
+                            id: localStorage.getItem('pageId'),
+                            name: token
+                        },
+                        success: function (response) {
+                            var obj = JSON.parse(response);
+                            console.log(obj)
+                            var postId = obj.data[0].id
+                            //localStorage.setItem("pageToken", pageToken);
+                            //localStorage.setItem("pageId", pageId);
+                            //console.log('{"pageId": "' + pageId + '", "message": "' + msg + '", "token": "' + pageToken + '" }')
+                            $.ajax({
+                                // Post username, password & the grant type to /token
+                                url: '/api/Comments',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                headers: {
+                                    'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                                },
+                                data: '{"postId": "' + postId + '", "message": "' + cmm + '", "token": "' + localStorage.getItem('pageToken') + '" }',
+                                success: function () {
+                                    alert("success")
+                                },
+                                // Display errors if any in the Bootstrap alert <div>
+                                error: function (jqXHR) {
+                                    alert("errorsgdsfdg")
+                                }
+                            });
+
+
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("There are no pages found in your account to post to")
+                        }
+                    });
+                });
             });
             $(function () {
                 var selectedClass = "";
