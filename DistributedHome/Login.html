@@ -6,6 +6,18 @@
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body style="padding-top:20px">
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '640502623345125',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v7.0'
+            });
+        };
+
+    </script>
+    <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
     <div class="col-md-10 col-md-offset-1">
         <div class="well">
             <!--Table to capture username and password-->
@@ -74,6 +86,19 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#btnFacebookLogin').click(function () {
+                alert("sdfsdf")
+                FB.login(function (response) {
+                    if (response.authResponse) {
+                        localStorage.setItem("fb_access_token", response.authResponse.accessToken);
+                        window.location.href = "Aggregator.html";
+                        // Now you can redirect the user or do an AJAX request to
+                        // a PHP script that grabs the signed request from the cookie.
+                    } else {
+                        alert('User cancelled login or did not fully authorize.');
+                    }
+                });
+            });
             $('#get').click(function () {
                 $.ajax({
                     // Post username, password & the grant type to /token
@@ -164,7 +189,13 @@
             });
 
             $('#btnFacebookLogin').click(function () {
-                window.location.href = "/api/Account/ExternalLogin?provider=Facebook&response_type=token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A60629%2FLogin.html&state=NaPt-0OOxevMrUuhFH7YsVDwlX4zUZDDsh8ONo4nndk1";
+                //window.location.href = "/api/Account/ExternalLogin?provider=Facebook&response_type=token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A60629%2FLogin.html&state=NaPt-0OOxevMrUuhFH7YsVDwlX4zUZDDsh8ONo4nndk1";
+                FB.getLoginStatus(function (response) {
+                    if (response.status === 'connected') {
+                        var accessToken = response.authResponse.accessToken;
+                        alert("got token")
+                    }
+                });
             });
 
             $('#btnLogin').click(function () {
