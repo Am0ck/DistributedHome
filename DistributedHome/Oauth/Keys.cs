@@ -10,17 +10,15 @@ namespace DistributedHome.Oauth
 {
     public class Keys
     {
-        protected string consumerKey;
-        protected string consumerKeySecret;
+        protected const string consumerKey = "npU8x3dfRNhnvCgTjg6gz9O62";
+        protected const string consumerKeySecret = "eAXEcDQ7togqXZlUhZUkXMlfJrRFVuAwhkrxgBl1ggCpnkay3H";
         protected const string oauthSignatureMethod = "HMAC-SHA1";
         protected string accessToken;
         protected string accessTokenSecret;
         protected const string oauthVersion = "1.0";
 
-        public Keys(string consumerKey, string consumerKeySecret, string accessToken, string accessTokenSecret)
+        public Keys(string accessToken, string accessTokenSecret)
         {
-            this.consumerKey = consumerKey;
-            this.consumerKeySecret = consumerKeySecret;
             this.accessToken = accessToken;
             this.accessTokenSecret = accessTokenSecret;
         }

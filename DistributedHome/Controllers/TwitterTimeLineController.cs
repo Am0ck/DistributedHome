@@ -18,7 +18,7 @@ namespace DistributedHome.Controllers
         {
             twEndpoint = new TwitterEndpoint();
         }
-        public string Get(string id)
+        public string Get(string id, string token)
         {
             Console.WriteLine(id);
             //string uid = User.Identity.GetUserId();
@@ -33,7 +33,7 @@ namespace DistributedHome.Controllers
             //string AccessToken = "1268709200420638720-Huq2PohLDEk001YNIFQUERjtn7r0V1";
             //string AccessTokenSecret = "4RMJCtf76Adtj7HiZsvXAq7j0sHRqi1NOwFAIN4NyxPHH";
             //string OauthVersion = "1.0";
-            Keys keys = new Keys(id, "","","");
+            Keys keys = new Keys(id, token);
 
             string AuthSign =  keys.createHeader(twEndpoint.getTimeline(), "GET");
             twEndpoint.Signature(AuthSign);
