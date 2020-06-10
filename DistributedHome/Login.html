@@ -4,6 +4,10 @@
     <title></title>
     <meta charset="utf-8" />
     <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha_dev.js" integrity="sha256-f7uKv5jSZ00WFrbiC2joTv0Ib563JE+GqY7DIZuVa4Y=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha.js" integrity="sha256-cyY9tyQbycFc+9eOsamJ8K8wmBsMcsXgxS9nLLkqK+I=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.4.2/sha1.js" integrity="sha256-ibMriwe6cOMfwW99BUHikXiQ/5ss7ZK0hR/a/vJY5I8=" crossorigin="anonymous"></script>    
+    
 </head>
 <body style="padding-top:20px">
     <script>
@@ -264,9 +268,13 @@
                 console.log(result)
                 console.log(token)
                 console.log(secret)
+                console.log(getAuthorization('GET',
+            'https://api.twitter.com/1.1/users/show.json',
+            { 'screen_name': 'void_imagineer' }))
                 // ...
             }).catch(function (error) {
                 // Handle Errors here.
+                alert("sdgfsfdg")
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 // The email of the user's account used.
@@ -276,6 +284,123 @@
                 // ...
             });
         }
+        getAuthorization('GET',
+            'https://api.twitter.com/1.1/users/show.json',
+            { 'screen_name': 'void_imagineer' })
+        //console.log(obj)
+
+        function getAuthorization(httpMethod, baseUrl, reqParams) {
+            // Get acces keys
+            //let keysJson = require('keys.json');
+            const consumerKey = 'npU8x3dfRNhnvCgTjg6gz9O62',
+                consumerSecret = 'eAXEcDQ7togqXZlUhZUkXMlfJrRFVuAwhkrxgBl1ggCpnkay3H',
+                accessToken = '1268709200420638720-Huq2PohLDEk001YNIFQUERjtn7r0V1',
+                accessTokenSecret = '4RMJCtf76Adtj7HiZsvXAq7j0sHRqi1NOwFAIN4NyxPHH';
+            // timestamp as unix epoch
+            let timestamp = Math.round(Date.now() / 1000);
+            // nonce as base64 encoded unique random string
+            let nonce = btoa(consumerKey + ':' + timestamp);
+            // generate signature from base string & signing key
+            let baseString = oAuthBaseString(httpMethod, baseUrl, reqParams, consumerKey, accessToken, timestamp, nonce);
+            let signingKey = oAuthSigningKey(consumerSecret, accessTokenSecret);
+            let signature = oAuthSignature(baseString, signingKey);
+            // return interpolated string
+            /*
+            $.ajax({
+                // Post username, password & the grant type to /token
+                url: 'api/TwitterTimeLine',
+                method: 'GET',
+                contentType: 'application/json',
+                data: {
+                    //'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                    id: 'oauth_consumer_key=' + consumerKey + '&oauth_nonce=' + nonce + '&oauth_signature=' + signature + '&oauth_signature_method=HMAC-SHA1' + '&oauth_timestamp=' + timestamp + '&oauth_token=' + accessToken + '&oauth_version=1.0',
+                    //id: 'screen_name="twitterdev", oauth_consumer_key="' + consumerKey + '", oauth_nonce="' + nonce + '", oauth_signature="' + signature + '", oauth_signature_method="HMAC-SHA1"' + ', oauth_timestamp="' + timestamp + '", oauth_token="' + accessToken + '", oauth_version="1.0"'
+                    //id: 'twitterdev/' + consumerKey + '/' + nonce + '/' + signature + '/HMAC-SHA1' + '/' + timestamp + '/' + accessToken + '/1.0'
+
+                    //'oauth_consumer_key': consumerKey,
+                    //'oauth_nonce': nonce,
+                    //'oauth_signature': signature,
+                    //'oauth_signature_method': 'HMAC-SHA1',
+                    //'oauth_timestamp': timestamp,
+                    //'oauth_token': accessToken,
+                    //'oauth_version': '1.0'
+
+                },
+                success: function (response) {
+                    console.log(response)
+                    var obj = JSON.parse(response);
+                    
+                },
+                // Display errors if any in the Bootstrap alert <div>
+                error: function (jqXHR) {
+                    alert("error")
+                }
+            });
+            */
+            return 'OAuth ' +
+                'oauth_consumer_key="' + consumerKey + '", ' +
+                'oauth_nonce="' + nonce + '", ' +
+                'oauth_signature="' + signature + '", ' +
+                'oauth_signature_method="HMAC-SHA1", ' +
+                'oauth_timestamp="' + timestamp + '", ' +
+                'oauth_token="' + accessToken + '", ' +
+                'oauth_version="1.0"'
+        }
+        function oAuthBaseString(method, url, params, key, token, timestamp, nonce) {
+            return method
+                + '&' + percentEncode(url)
+                + '&' + percentEncode(genSortedParamStr(params, key, token, timestamp, nonce));
+        };
+        function oAuthSigningKey(consumer_secret, token_secret) {
+            return consumer_secret + '&' + token_secret;
+        };
+        function oAuthSignature(base_string, signing_key) {
+            var signature = hmac_sha1(base_string, signing_key);
+            return percentEncode(signature);
+        };
+        function percentEncode(str) {
+            return encodeURIComponent(str).replace(/[!*()']/g, (character) => {
+                return '%' + character.charCodeAt(0).toString(16);
+            });
+        };
+        //var jsSHA = require('jssha');
+        function hmac_sha1(string, secret) {
+            let shaObj = new jsSHA("SHA-1", "TEXT");
+            shaObj.setHMACKey(secret, "TEXT");
+            shaObj.update(string);
+            let hmac = shaObj.getHMAC("B64");
+            return hmac;
+        };
+        function mergeObjs(obj1, obj2) {
+            for (var attr in obj2) {
+                obj1[attr] = obj2[attr];
+            }
+            return obj1;
+        };
+        function genSortedParamStr(params, key, token, timestamp, nonce) {
+            // Merge oauth params & request params to single object
+            let paramObj = mergeObjs(
+                {
+                    oauth_consumer_key: key,
+                    oauth_nonce: nonce,
+                    oauth_signature_method: 'HMAC-SHA1',
+                    oauth_timestamp: timestamp,
+                    oauth_token: token,
+                    oauth_version: '1.0'
+                },
+                params
+            );
+            // Sort alphabetically
+            let paramObjKeys = Object.keys(paramObj);
+            let len = paramObjKeys.length;
+            paramObjKeys.sort();
+            // Interpolate to string with format as key1=val1&key2=val2&...
+            let paramStr = paramObjKeys[0] + '=' + paramObj[paramObjKeys[0]];
+            for (var i = 1; i < len; i++) {
+                paramStr += '&' + paramObjKeys[i] + '=' + percentEncode(decodeURIComponent(paramObj[paramObjKeys[i]]));
+            }
+            return paramStr;
+        };
     </script>
 </body>
 </html>
