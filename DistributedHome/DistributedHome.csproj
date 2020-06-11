@@ -212,11 +212,15 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\FacebookController.cs" />
+    <Compile Include="Controllers\FavouritesController.cs" />
+    <Compile Include="Controllers\FriendsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LikesController.cs" />
     <Compile Include="Controllers\PageController.cs" />
     <Compile Include="Controllers\PhotosController.cs" />
     <Compile Include="Controllers\PreferencesController.cs" />
+    <Compile Include="Controllers\StatusController.cs" />
+    <Compile Include="Controllers\TweetsController.cs" />
     <Compile Include="Controllers\TwitterTimeLineController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Endpoints\Endpoint.cs" />

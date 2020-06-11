@@ -55,7 +55,7 @@ namespace DistributedHome.Endpoints
         {
             string tok = at.Substring(at.IndexOf("at=") + 3);
             StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
-            stringBuilder.Append("?");
+            stringBuilder.Append("me?");
             stringBuilder.Append("fields=");
             if (at.Contains("first_name")) {
                 stringBuilder.Append("first_name,");

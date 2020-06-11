@@ -7,10 +7,26 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     </head>
     <body style="padding-top:20px">
+        <script>
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '640502623345125',
+                    autoLogAppEvents: true,
+                    xfbml: true,
+                    version: 'v7.0'
+                });
+            };
+
+        </script>
+        <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
         <input id="get" class="btn btn-success" type="button"
                value="Get" />
         <input id="getPhotos" class="btn btn-success" type="button"
                value="Get Photos" />
+        <input type="button" id="btnFacebookLogin"
+               value="Login with Facebook" class="btn btn-success" />
+        <input type="button" id="btnTwLogin"
+               value="Login with Twitter" class="btn btn-success" onclick="twSignin()" />
         <div id="PostContent" class="container jumbotron">
 
             <div id="posts" class="row">
@@ -58,18 +74,18 @@
                 <div class="col-lg-4">
 
                 </div>
-                <div id="twP" class="col-lg-4">
+                <div id="twFavourites" class="col-lg-4">
                     <h2 class="display-4">Tweets</h2>
-                    <div id="twPosts" class="row">
+                    <div id="twFav" class="row">
                         <div class="card" style="width: 18rem;">
-                            <ul id="twul" class="list-group list-group-flush"></ul>
+                            <ul id="twf" class="list-group list-group-flush"></ul>
                         </div>
                     </div>
                 </div>
 
             </div>
         </div>
-        <div id="ProfileContent" class="container jumbotron">
+        <div id="SendProfileContent" class="container jumbotron">
 
             <div id="prefs" class="row">
                 <div id="fbP" class="col-lg-4">
@@ -93,8 +109,13 @@
                 <div class="col-lg-4">
 
                 </div>
-                <div id="twP" class="col-lg-4">
-                    <h2 class="display-4">Get Twitter Profile Details</h2>
+                <div id="twPadf" class="col-lg-4">
+                    <h2 class="display-4">Get Twitter Friends</h2>
+                    <div id="twFrs" class="row">
+                        <div class="card" style="width: 18rem;">
+                            <ul id="twFriends" class="list-group list-group-flush"></ul>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -119,8 +140,13 @@
                 <div class="col-lg-4">
 
                 </div>
-                <div id="twP" class="col-lg-4">
+                <div id="twPro" class="col-lg-4">
                     <h2 class="display-4">Get Twitter Profile Details</h2>
+                    <div id="twFF" class="row">
+                        <div class="card" style="width: 18rem;">
+                            <ul id="twFriend2s" class="list-group list-group-flush"></ul>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -135,106 +161,131 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>-->
         <script type="text/javascript">
             $(document).ready(function () {
-                console.log(localStorage.getItem('accessToken'))
-                var token = localStorage.getItem('fb_access_token')
+                $('#btnFacebookLogin').click(function () {
+                    alert("sdfsdf")
+                    FB.login(function (response) {
+                        if (response.authResponse) {
+                            sessionStorage.setItem("fb_access_token", response.authResponse.accessToken);
+                            //alert(response.authResponse.accessToken)
+                        } else {
+                            alert('User cancelled login or did not fully authorize.');
+                        }
+                    });
+                });
+                //console.log(localStorage.getItem('accessToken'))
+                
                 $('#get').click(function () {
-                    //alert("sad")
-                    alert("lat is: " + localStorage.getItem('accessToken'))
-                    $("#content").hide;
-                    $.ajax({
-                        // Post username, password & the grant type to /token
-                        url: '/api/Facebook',
-                        method: 'GET',
-                        contentType: 'application/json',
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-                        },
-                        data: {
-                            id: token
-                        },
-                        success: function (response) {
-                            var obj = JSON.parse(response);
-                            //console.log(obj)
-                            //console.log(obj.data)
-                            var l = obj.data.length
-                            //console.log(l)
-                            for (i = 0; i < l; i++) {
-                                //var card = "<div class='card' style='width: 18rem;'>"
-                                //card += "<ul class='list-group list-group-flush'>"
-                                var li = "<li class='list-group-item'>" + obj.data[i].message + "</li>"
-                                var img = obj.data[i].picture
-                                var p = obj.data[i].message
-                                document.getElementById("fbul").innerHTML += li;
-                                document.getElementById("twul").innerHTML += li;
+                    var token = sessionStorage.getItem('fb_access_token')
+                    if (token != null) {
+                        //alert("lat is: " + localStorage.getItem('accessToken'))
+                        $("#content").hide;
+                        $.ajax({
+                            // Post username, password & the grant type to /token
+                            url: '/api/Facebook',
+                            method: 'GET',
+                            contentType: 'application/json',
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                            },
+                            data: {
+                                id: token
+                            },
+                            success: function (response) {
+                                var obj = JSON.parse(response);
+                                //console.log(obj)
+                                //console.log(obj.data)
+                                var l = obj.data.length
+                                //console.log(l)
+                                for (i = 0; i < l; i++) {
+                                    //var card = "<div class='card' style='width: 18rem;'>"
+                                    //card += "<ul class='list-group list-group-flush'>"
+                                    alert(obj.data[i].message)
+                                    if (obj.data[i].message != null) {
+                                        var li = "<li class='list-group-item'>" + obj.data[i].message + "</li>"
+                                        var img = obj.data[i].picture
+                                        var p = obj.data[i].message
+                                        document.getElementById("fbul").innerHTML += li;
+                                    }//document.getElementById("twul").innerHTML += li;
+                                }
+                            },
+                            // Display errors if any in the Bootstrap alert <div>
+                            error: function (jqXHR) {
+                                alert("111error")
                             }
-                        },
-                        // Display errors if any in the Bootstrap alert <div>
-                        error: function (jqXHR) {
-                            alert("111error")
-                        }
-                    });
-                    $.ajax({
-                        // Post username, password & the grant type to /token
-                        url: '/api/Likes',
-                        method: 'GET',
-                        contentType: 'application/json',
-                        headers: {
-                            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-                        },
-                        data: {
-                            id: token
-                        },
-                        success: function (response) {
-                            var obj = JSON.parse(response);
-                            console.log(obj)
-                            console.log(obj.data)
-                            var l = obj.data.length
-                            console.log(l)
-                            for (i = 0; i < l; i++) {
-                                var li = "<li class='list-group-item'>" + obj.data[i].name + "</li>"
-                                var img = obj.data[i].picture
-                                var p = obj.data[i].message
-                                document.getElementById("fbli").innerHTML += li;
+                        });
+                        $.ajax({
+                            // Post username, password & the grant type to /token
+                            url: '/api/Likes',
+                            method: 'GET',
+                            contentType: 'application/json',
+                            headers: {
+                                'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                            },
+                            data: {
+                                id: token
+                            },
+                            success: function (response) {
+                                var obj = JSON.parse(response);
+                                console.log(obj)
+                                console.log(obj.data)
+                                var l = obj.data.length
+                                console.log(l)
+                                for (i = 0; i < l; i++) {
+                                    var li = "<li class='list-group-item'>" + obj.data[i].name + "</li>"
+                                    var img = obj.data[i].picture
+                                    var p = obj.data[i].message
+                                    document.getElementById("fbli").innerHTML += li;
+                                }
+                            },
+                            // Display errors if any in the Bootstrap alert <div>
+                            error: function (jqXHR) {
+                                alert("error")
                             }
-                        },
-                        // Display errors if any in the Bootstrap alert <div>
-                        error: function (jqXHR) {
-                            alert("error")
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        alert("You must be authgenticated in order to fetch data")
+                    }
                 });
                 $('#getPhotos').click(function () {
-                    $.ajax({
-                        // Post username, password & the grant type to /token
-                        url: '/api/Photos',
-                        method: 'GET',
-                        contentType: 'application/json',
-                        data: {
-                            id: token
-                        },
-                        success: function (response) {
-                            var obj = JSON.parse(response);
-                            console.log(obj)
-                            console.log(obj.data)
-                            var l = obj.data.length
-                            for (i = 0; i < l; i++) {
-                                var pic = "<div class='mb-3 pics animation all 2'>"
-                                pic += "<img class='img-fluid' src='" + obj.data[i].picture + "' alt='Card image cap'>"
-                                pic += "</div>"
+                    var token = sessionStorage.getItem('fb_access_token')
+                    if (token != null) {
+                        $.ajax({
+                            // Post username, password & the grant type to /token
+                            url: '/api/Photos',
+                            method: 'GET',
+                            contentType: 'application/json',
+                            data: {
+                                id: token
+                            },
+                            success: function (response) {
+                                var obj = JSON.parse(response);
+                                console.log(obj)
+                                console.log(obj.data)
+                                var l = obj.data.length
+                                for (i = 0; i < l; i++) {
+                                    var pic = "<div class='mb-3 pics animation all 2'>"
+                                    pic += "<img class='img-fluid' src='" + obj.data[i].picture + "' alt='Card image cap'>"
+                                    pic += "</div>"
 
-                                document.getElementById("fbgallery").innerHTML += '<img class="col-md-3" src="' + obj.data[i].picture + '">';
-                                console.log(obj.data[i].picture)
+                                    document.getElementById("fbgallery").innerHTML += '<img class="col-md-3" src="' + obj.data[i].picture + '">';
+                                    console.log(obj.data[i].picture)
 
+                                }
+                                //document.getElementById("gallery").innerHTML += pic;
+                            },
+                            // Display errors if any in the Bootstrap alert <div>
+                            error: function (jqXHR) {
+                                alert("error")
                             }
-                            //document.getElementById("gallery").innerHTML += pic;
-                        },
-                        // Display errors if any in the Bootstrap alert <div>
-                        error: function (jqXHR) {
-                            alert("error")
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        alert("You must be authgenticated in order to fetch data")
+                    }
                 });
                 $('#fbSave').click(function () {
+                    var token = sessionStorage.getItem('fb_access_token')
                     var pref = ""
                     var name = document.getElementById('fb_name_pref')
                     var surname = document.getElementById('fb_surname_pref')
@@ -264,6 +315,7 @@
                             var obj = JSON.parse(response);
                             console.log(obj)
                             console.log(obj.data)
+                            /*
                             var l = obj.data.length
                             for (i = 0; i < l; i++) {
                                 var pic = "<div class='mb-3 pics animation all 2'>"
@@ -274,6 +326,7 @@
                                 console.log(obj.data[i].picture)
 
                             }
+                            */
                             //document.getElementById("gallery").innerHTML += pic;
                         },
                         // Display errors if any in the Bootstrap alert <div>
@@ -300,8 +353,8 @@
                             console.log(obj)
                             var pageToken = obj.data[0].access_token
                             var pageId = obj.data[0].id
-                            localStorage.setItem("pageToken", pageToken);
-                            localStorage.setItem("pageId", pageId);
+                            sessionStorage.setItem("pageToken", pageToken);
+                            sessionStorage.setItem("pageId", pageId);
                             console.log('{"pageId": "' + pageId + '", "message": "' + msg + '", "token": "' + pageToken + '" }')
                             $.ajax({
                                 // Post username, password & the grant type to /token
@@ -346,8 +399,8 @@
                             console.log(obj)
                             var pageToken = obj.data[0].access_token
                             var pageId = obj.data[0].id
-                            localStorage.setItem("pageToken", pageToken);
-                            localStorage.setItem("pageId", pageId);
+                            sessionStorage.setItem("pageToken", pageToken);
+                            sessionStorage.setItem("pageId", pageId);
                         },
                         // Display errors if any in the Bootstrap alert <div>
                         error: function (jqXHR) {
@@ -382,7 +435,7 @@
                                 headers: {
                                     'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
                                 },
-                                data: '{"postId": "' + postId + '", "message": "' + cmm + '", "token": "' + localStorage.getItem('pageToken') + '" }',
+                                data: '{"postId": "' + postId + '", "message": "' + cmm + '", "token": "' + sessionStorage.getItem('pageToken') + '" }',
                                 success: function () {
                                     alert("success")
                                 },
@@ -413,6 +466,158 @@
                     }, 300);
                 });
             });
+        </script>
+        <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-app.js"></script>
+        <script defer src="https://www.gstatic.com/firebasejs/7.15.0/firebase-auth.js"></script>
+        <script>
+            var firebaseConfig = {
+                apiKey: "AIzaSyDd-PVlgFvw2ToYZqJQ8x1TpBxn9D4Drx4",
+                authDomain: "distributedhome-8b50c.firebaseapp.com",
+                databaseURL: "https://distributedhome-8b50c.firebaseio.com",
+                projectId: "distributedhome-8b50c",
+                storageBucket: "distributedhome-8b50c.appspot.com",
+                messagingSenderId: "1045191378985",
+                appId: "1:1045191378985:web:55bdefa7911adbccfd3438"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+        </script>
+        <script>
+            function twSignin() {
+                var provider = new firebase.auth.TwitterAuthProvider();
+                firebase.auth().useDeviceLanguage();
+                firebase.auth().signInWithPopup(provider).then(function (result) {
+                    // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+                    // You can use these server side with your app's credentials to access the Twitter API.
+                    var token = result.credential.accessToken;
+                    var secret = result.credential.secret;
+                    // The signed-in user info.
+                    var user = result.user;
+                    console.log(result)
+                    console.log(token)
+                    console.log(secret)
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: 'api/TwitterTimeLine',
+                        method: 'GET',
+                        contentType: 'application/json',
+                        data: {
+                            id: token,
+                            token: secret
+                        },
+                        success: function (response) {
+                            console.log(response)
+                            var obj = JSON.parse(response);
+                            console.log(obj)
+                            var l = obj.length
+                            for (i = 0; i < l; i++) {
+                                console.log(obj[i].text)
+                                //var card = "<div class='card' style='width: 18rem;'>"
+                                //card += "<ul class='list-group list-group-flush'>"
+                                //var li = "<li class='list-group-item'>" + obj.data[i].message + "</li>"
+                                //var img = obj[i].text
+                                //alert(img)
+                                //var p = obj.data[i].message
+                                document.getElementById("twul").innerHTML += "<li class='list-group-item'>" + obj[i].text + "</li>";
+                            }
+
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("error")
+                        }
+                    });
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: 'api/Favourites',
+                        method: 'GET',
+                        contentType: 'application/json',
+                        data: {
+                            id: token,
+                            token: secret
+                        },
+                        success: function (response) {
+                            console.log(response)
+                            var obj = JSON.parse(response);
+                            console.log(obj)
+                            var l = obj.length
+                            for (i = 0; i < l; i++) {
+                                console.log(obj[i].text)
+                                //var card = "<div class='card' style='width: 18rem;'>"
+                                //card += "<ul class='list-group list-group-flush'>"
+                                //var li = "<li class='list-group-item'>" + obj.data[i].message + "</li>"
+                                //var img = obj[i].text
+                                //alert(img)
+                                //var p = obj.data[i].message
+                                document.getElementById("twf").innerHTML += "<li class='list-group-item'>" + obj[i].text + "</li>";
+                            }
+
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("error")
+                        }
+                    });
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: 'api/Friends',
+                        method: 'GET',
+                        contentType: 'application/json',
+                        data: {
+                            id: token,
+                            token: secret
+                        },
+                        success: function (response) {
+                            console.log(response)
+                            var obj = JSON.parse(response);
+                            console.log(obj.users)
+                            var l = obj.users.length
+                            for (i = 0; i < l; i++) {
+                                console.log(obj.users[i].name)
+                                //var card = "<div class='card' style='width: 18rem;'>"
+                                //card += "<ul class='list-group list-group-flush'>"
+                                //var li = "<li class='list-group-item'>" + obj.data[i].message + "</li>"
+                                //var img = obj[i].text
+                                //alert(img)
+                                //var p = obj.data[i].message
+                                document.getElementById("twFriends").innerHTML += "<li class='list-group-item'>" + obj.users[i].name + "</li>";
+                            }
+
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("error")
+                        }
+                    });
+                    $.ajax({
+                        // Post username, password & the grant type to /token
+                        url: 'api/Status',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: '{"token": "' + token + '", "message": "' + "automsg112" + '", "secret": "' + secret + '" }'
+                        ,
+                        success: function (response) {
+                            alert("success")
+
+                        },
+                        // Display errors if any in the Bootstrap alert <div>
+                        error: function (jqXHR) {
+                            alert("error")
+                        }
+                    });
+                    // ...
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    alert("sdgfsfdg")
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                });
+            }
         </script>
     </body>
 </html>

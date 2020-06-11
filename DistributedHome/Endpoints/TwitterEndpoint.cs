@@ -17,11 +17,36 @@ namespace DistributedHome.Endpoints
         }
         public string getTimeline()
         {
-
             StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
-            stringBuilder.Append("/1.1/");
+            stringBuilder.Append("1.1/");
             stringBuilder.Append("statuses/");
             stringBuilder.Append("user_timeline.json");
+            return stringBuilder.ToString();
+        }
+
+        public string getFavourites()
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append("1.1/");
+            stringBuilder.Append("favorites/");
+            stringBuilder.Append("list.json");
+            return stringBuilder.ToString();
+        }
+
+        public string getFriends()
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append("1.1/");
+            stringBuilder.Append("friends/");
+            stringBuilder.Append("list.json");
+            return stringBuilder.ToString();
+        }
+        public string postTweet()
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append("1.1/");
+            stringBuilder.Append("statuses/");
+            stringBuilder.Append("update.json");
             return stringBuilder.ToString();
         }
 
