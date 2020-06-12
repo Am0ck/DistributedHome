@@ -11,6 +11,7 @@ using System.Web.Http;
 
 namespace DistributedHome.Controllers
 {
+    [Authorize]
     public class PageController : ApiController
     {
         private FacebookGraphEndpoint fbEndpoint;

@@ -41,6 +41,14 @@ namespace DistributedHome.Endpoints
             stringBuilder.Append("list.json");
             return stringBuilder.ToString();
         }
+        public string getFollowers()
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append("1.1/");
+            stringBuilder.Append("followers/");
+            stringBuilder.Append("list.json");
+            return stringBuilder.ToString();
+        }
         public string postTweet()
         {
             StringBuilder stringBuilder = new StringBuilder(baseEndpoint);

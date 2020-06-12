@@ -39,9 +39,9 @@ namespace DistributedHome.Controllers
             {
                 query += "('" + uid + "', 2),";
             }
-            if (id.Contains("dob"))
+            if (id.Contains("birthday"))
             {
-                query += "('" + uid + "', 2)";
+                query += "('" + uid + "', 3)";
             }
             if (query.Substring(query.Length - 1).Equals(",")) {
                 query = query.Remove(query.Length - 1, 1);

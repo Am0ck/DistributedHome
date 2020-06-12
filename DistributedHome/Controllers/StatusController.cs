@@ -12,6 +12,7 @@ using System.Web.Http;
 
 namespace DistributedHome.Controllers
 {
+    [Authorize]
     public class StatusController : ApiController
     {
         private TwitterEndpoint twEndpoint;

@@ -10,6 +10,7 @@ using System.Web.Http;
 
 namespace DistributedHome.Controllers
 {
+    [Authorize]
     public class TwitterTimeLineController : ApiController
     {
         private TwitterEndpoint twEndpoint;

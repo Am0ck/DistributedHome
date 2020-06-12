@@ -11,11 +11,11 @@ using System.Web.Http;
 namespace DistributedHome.Controllers
 {
     [Authorize]
-    public class FavouritesController : ApiController
+    public class FollowersController : ApiController
     {
         private TwitterEndpoint twEndpoint;
 
-        public FavouritesController() : base()
+        public FollowersController() : base()
         {
             twEndpoint = new TwitterEndpoint();
         }
@@ -24,10 +24,10 @@ namespace DistributedHome.Controllers
             Console.WriteLine(id);
             Keys keys = new Keys(id, token);
 
-            string AuthSign = keys.createHeader(twEndpoint.getFavourites(), "GET");
+            string AuthSign = keys.createHeader(twEndpoint.getFriends(), "GET");
             twEndpoint.Signature(AuthSign);
             RestClient restClient = new RestClient(httpVerb.GET);
-            restClient.endpoint = twEndpoint.getFavourites();
+            restClient.endpoint = twEndpoint.getFriends();
             return restClient.makeRequest(httpVerb.GET, twEndpoint.getEndpoint());
         }
     }

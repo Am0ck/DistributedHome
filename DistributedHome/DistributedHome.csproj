@@ -213,6 +213,7 @@
     <Compile Include="Controllers\CommentsController.cs" />
     <Compile Include="Controllers\FacebookController.cs" />
     <Compile Include="Controllers\FavouritesController.cs" />
+    <Compile Include="Controllers\FollowersController.cs" />
     <Compile Include="Controllers\FriendsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LikesController.cs" />

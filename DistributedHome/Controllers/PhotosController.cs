@@ -9,6 +9,7 @@ using System.Web.Http;
 
 namespace DistributedHome.Controllers
 {
+    [Authorize]
     public class PhotosController : ApiController
     {
         private FacebookGraphEndpoint fbEndpoint;
