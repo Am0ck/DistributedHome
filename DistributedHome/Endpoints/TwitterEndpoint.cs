@@ -57,6 +57,14 @@ namespace DistributedHome.Endpoints
             stringBuilder.Append("update.json");
             return stringBuilder.ToString();
         }
+        public string searchTweet()
+        {
+            StringBuilder stringBuilder = new StringBuilder(baseEndpoint);
+            stringBuilder.Append("1.1/");
+            stringBuilder.Append("search/");
+            stringBuilder.Append("tweets.json");
+            return stringBuilder.ToString();
+        }
 
         public Dictionary<string, string> getEndpoint()
         {
